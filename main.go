@@ -36,6 +36,6 @@ func main() {
 
 	err = cmds.run(&appState, cmd)
 	if err != nil {
-		log.Fatalf("error running command: %v", err)
+		log.Fatal(err)
 	}
 }
