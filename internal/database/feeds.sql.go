@@ -55,33 +55,44 @@ func (q *Queries) CreateFeed(ctx context.Context, arg CreateFeedParams) (Feed, e
 	return i, err
 }
 
-const getFeedsWithUserName = `-- name: GetFeedsWithUserName :many
-SELECT feeds.id, feeds.name, feeds.url, users.name AS created_by
-FROM feeds
-JOIN users ON feeds.user_id = users.id
+const getFeedByUrl = `-- name: GetFeedByUrl :one
+SELECT id, created_at, updated_at, name, url, user_id FROM feeds WHERE url = $1
 `
 
-type GetFeedsWithUserNameRow struct {
-	ID        uuid.UUID
-	Name      string
-	Url       string
-	CreatedBy string
+func (q *Queries) GetFeedByUrl(ctx context.Context, url string) (Feed, error) {
+	row := q.db.QueryRowContext(ctx, getFeedByUrl, url)
+	var i Feed
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Name,
+		&i.Url,
+		&i.UserID,
+	)
+	return i, err
 }
 
-func (q *Queries) GetFeedsWithUserName(ctx context.Context) ([]GetFeedsWithUserNameRow, error) {
-	rows, err := q.db.QueryContext(ctx, getFeedsWithUserName)
+const getFeeds = `-- name: GetFeeds :many
+SELECT id, created_at, updated_at, name, url, user_id FROM feeds
+`
+
+func (q *Queries) GetFeeds(ctx context.Context) ([]Feed, error) {
+	rows, err := q.db.QueryContext(ctx, getFeeds)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []GetFeedsWithUserNameRow
+	var items []Feed
 	for rows.Next() {
-		var i GetFeedsWithUserNameRow
+		var i Feed
 		if err := rows.Scan(
 			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
 			&i.Name,
 			&i.Url,
-			&i.CreatedBy,
+			&i.UserID,
 		); err != nil {
 			return nil, err
 		}
