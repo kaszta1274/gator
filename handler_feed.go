@@ -9,14 +9,9 @@ import (
 	"github.com/kaszta1274/gator/internal/database"
 )
 
-func handlerAddFeed(s *state, cmd command) error {
+func handlerAddFeed(s *state, cmd command, user database.User) error {
 	if len(cmd.Args) != 2 {
 		return fmt.Errorf("usage: %s <name> <url>", cmd.Name)
-	}
-
-	user, err := s.db.GetUser(context.Background(), s.cfg.CurrentUserName)
-	if err != nil {
-		return fmt.Errorf("couldn't get user: %w", err)
 	}
 
 	feedName := cmd.Args[0]
@@ -50,6 +45,7 @@ func handlerAddFeed(s *state, cmd command) error {
 
 	fmt.Println("Feed added successfully:")
 	printFeed(feed, user)
+	fmt.Println()
 
 	fmt.Printf("Successfully followed %s\n", cmd.Args[0])
 	printCreateFeedFollow(feedFollow)
