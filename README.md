@@ -43,4 +43,4 @@ go install github.com/kaszta1274/gator
 - ```gator follow <url>``` - follows the RSS feed for the current user
 - ```gator unfollow <url>``` - follows the RSS feed for the current user
 - ```gator following``` - lists all the followed feeds for the current user
-- ```gator browse``` - displays summaries of aggregated posts
+- ```gator browse [limit]``` - displays summaries of aggregated posts

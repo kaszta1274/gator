@@ -10,7 +10,7 @@ import (
 
 func handlerBrowse(s *state, cmd command, user database.User) error {
 	if len(cmd.Args) != 0 && len(cmd.Args) != 1 {
-		return fmt.Errorf("usage: %s <limit> - limit defaults to 2", cmd.Name)
+		return fmt.Errorf("usage: %s [limit] - limit defaults to 2", cmd.Name)
 	}
 
 	limit := 2
